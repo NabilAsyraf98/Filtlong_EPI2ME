@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://example.com/nextflow_schema.json",
+  "title": "Filtlong Workflow",
+  "workflow_title": "Filtlong Workflow",
+  "description": "Nextflow workflow for filtering long reads using Filtlong.",
+  "type": "object",
+  "definitions": {
+    "input": {
+      "title": "Input Options",
+      "type": "object",
+      "fa_icon": "fas fa-arrow-right",
+      "description": "Parameters for input data.",
+      "properties": {
+        "input": {
+          "type": "string",
+          "format": "directory-path",
+          "title": "Input Reads",
+          "description": "Path to the directory containing input reads (FASTQ.gz format).",
+          "help_text": "Provide the path to a directory containing FASTQ files for processing."
+        }
+      },
+      "required": ["input"]
+    },
+    "filtering": {
+      "title": "Filtering Options",
+      "type": "object",
+      "fa_icon": "fas fa-filter",
+      "description": "Parameters for configuring Filtlong.",
+      "properties": {
+        "min_length": {
+          "type": "integer",
+          "default": 1000,
+          "title": "Minimum Read Length",
+          "description": "Minimum length of reads to retain.",
+          "help_text": "Reads shorter than this length will be filtered out. Default is 1000 bp.",
+          "id": "params.min_length"
+        },
+        "keep_percent": {
+          "type": "number",
+          "default": 90.0,
+          "title": "Keep Percentage",
+          "description": "Percentage of the highest-quality reads to retain.",
+          "help_text": "Default is 90% so it throws out the worst 10% of reads. This is measured by bp, not by read count. So this option throws out the worst 10% of read bases",
+          "id":"params.keep_percent"
+        },
+        "target_bases": {
+          "type": "integer",
+          "default": 500000000,
+          "title": "Target Bases",
+          "description": "Total number of bases to retain.",
+          "help_text": "Specify the target number of bases to retain in the filtered output. Default is 500 Mbp bases. Remove the worst reads until only 500 Mbp remain, useful for very large read sets. If the input read set is less than 500 Mbp, this setting will have no effect.",
+          "id": "params.target_bases"
+        }
+      }
+    },
+    "output": {
+      "title": "Output Options",
+      "type": "object",
+      "fa_icon": "fas fa-arrow-left",
+      "description": "Parameters for saving workflow outputs.",
+      "properties": {
+        "out_dir": {
+          "type": "string",
+          "default": "./results",
+          "format": "directory-path",
+          "title": "Output Directory",
+          "description": "Directory where filtered reads and logs will be saved.",
+          "help_text": "Specify the directory where the workflow will save its outputs. Default is './results'."
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/definitions/input"
+    },
+    {
+      "$ref": "#/definitions/output"
+    }
+  ],
+  "properties": {
+    "validate_params": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable parameter validation before starting the workflow."
+    },
+    "monochrome_logs": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, disable colored logs for better readability in plain-text environments."
+    }
+  },
+  "resources": {
+    "recommended": {
+      "cpus": 2,
+      "memory": "4GB"
+    },
+    "minimum": {
+      "cpus": 1,
+      "memory": "2GB"
+    },
+    "run_time": "10 minutes per sample",
+    "disk_space": "5GB",
+    "arm_support": true
+  }
+}
